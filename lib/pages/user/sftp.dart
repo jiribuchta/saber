@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dartssh2/dartssh2.dart';
 
 class SFTPLoginPage extends StatefulWidget {
   const SFTPLoginPage({
@@ -91,12 +95,26 @@ class _SFTPLoginPageState extends State<SFTPLoginPage> {
               print('Username: ${_usernameController.text}');
               print('Password: ${_passwordController.text}');
 
-
+              getSFTPconnection();
             },
             child: Text('Add SFTP Profile'),
           ),
         ],
       ),
     );
+  }
+  getSFTPconnection() async {
+    final socket = await SSHSocket.connect(_serverUrlController.text, 22);
+  final client = SSHClient(
+    socket,
+    username: _usernameController.text,
+    onPasswordRequest: () => _passwordController.text,
+  );
+
+  final uptime = await client.run('ls -la');
+  print(utf8.decode(uptime));
+
+  client.close();
+  await client.done;
   }
 }
