@@ -17,6 +17,7 @@ import 'package:saber/components/settings/settings_dropdown.dart';
 import 'package:saber/components/settings/settings_selection.dart';
 import 'package:saber/components/settings/settings_subtitle.dart';
 import 'package:saber/components/settings/settings_switch.dart';
+import 'package:saber/components/settings/sftp_profile.dart';
 import 'package:saber/components/settings/update_manager.dart';
 import 'package:saber/components/theming/adaptive_alert_dialog.dart';
 import 'package:saber/components/theming/adaptive_toggle_buttons.dart';
@@ -190,6 +191,7 @@ class _SettingsPageState extends State<SettingsPage> {
               sliver: SliverList.list(
             children: [
               const NextcloudProfile(),
+              const SFTPProfile(),
               const Padding(
                 padding: EdgeInsets.all(8),
                 child: AppInfo(),

@@ -3,7 +3,7 @@
         "submodules/": true
     },
     "editor.defaultFormatter": "Dart-Code.dart-code",
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "dart.doNotFormat": [
         "**/submodules/**",
         "**/lib/i18n/strings.g.dart"

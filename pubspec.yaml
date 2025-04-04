@@ -145,6 +145,7 @@ dependencies:
 
   pdfrx: ^1.0.85
   path: ^1.9.1
+  dartssh2: ^2.12.0
 
 dev_dependencies:
   flutter_test:

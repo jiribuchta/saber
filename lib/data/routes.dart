@@ -10,6 +10,7 @@ abstract class RoutePaths {
   static const home = '$prefixOfHome/:subpage';
   static const edit = '/edit';
   static const login = '/login';
+  static const sftp = '/sftp';
   static const logs = '/logs';
 
   static const prefixOfHome = '/home';
