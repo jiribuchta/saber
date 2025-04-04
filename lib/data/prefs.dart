@@ -27,7 +27,7 @@ abstract class Prefs {
   /// If true, the user's preferences will not be loaded and the default values will be used instead.
   /// The values will not be saved either.
   @visibleForTesting
-  static bool testingMode = false;
+  static bool testingMode = true;
 
   /// If true, a warning will be printed if a pref is accessed before it is loaded.
   ///
@@ -54,6 +54,12 @@ abstract class Prefs {
 
   /// the password used to encrypt/decrypt notes
   static late final EncPref<String> encPassword;
+
+  /// the login for sftp
+  static late final EncPref<String> sftpUrl;
+  static late final EncPref<String> sftpPort;
+  static late final EncPref<String> sftpPassword;
+  static late final EncPref<String> sftpUsername;
 
   /// Whether the user is logged in and has provided both passwords.
   /// Please ensure that the relevant Prefs are loaded before using this.
@@ -177,6 +183,11 @@ abstract class Prefs {
 
     key = EncPref('key', '');
     iv = EncPref('iv', '');
+
+    sftpUrl = EncPref('sftpUrl', '');
+    sftpPort = EncPref('sftpPort', '22');
+    sftpPassword = EncPref('sftpPassword', '');
+    sftpUsername = EncPref('sftpUsername', '');
 
     pfp = PlainPref('pfp', null);
     syncInBackground = PlainPref('syncInBackground', true);
