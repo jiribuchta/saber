@@ -171,6 +171,8 @@ abstract class Prefs {
   /// The last storage quota that was fetched from Nextcloud
   static late final PlainPref<Quota?> lastStorageQuota;
 
+  static late final PlainPref<Quota?> sftpLastStorageQuota;
+
   static late final PlainPref<bool> shouldCheckForUpdates;
   static late final PlainPref<bool> shouldAlwaysAlertForUpdates;
 
@@ -299,6 +301,7 @@ abstract class Prefs {
     fileSyncResyncEverythingDate = PlainPref('fileSyncResyncEverythingDate',
         DateTime.parse('2023-12-10T10:06:31.000Z'));
     lastStorageQuota = PlainPref('lastStorageQuota', null);
+    sftpLastStorageQuota = PlainPref('sftpLastSrotageQuota', null);
 
     shouldCheckForUpdates = PlainPref('shouldCheckForUpdates',
         FlavorConfig.shouldCheckForUpdatesByDefault && !Platform.isLinux);

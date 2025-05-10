@@ -56,7 +56,7 @@ class _EncLoginStepState extends State<EncLoginStep> {
           excludeFromSemantics: true,
         ),
         const SizedBox(height: 64),
-        Text(t.login.status.hi(u: Prefs.username.value),
+        Text(t.login.status.hi(u: Prefs.sftpUsername.value),
             style: textTheme.headlineSmall),
         Text.rich(
           t.login.notYou(
@@ -65,9 +65,10 @@ class _EncLoginStepState extends State<EncLoginStep> {
               style: TextStyle(color: colorScheme.link),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  Prefs.url.value = '';
-                  Prefs.username.value = '';
-                  Prefs.ncPassword.value = '';
+                  Prefs.sftpUrl.value = '';
+                  Prefs.sftpUsername.value = '';
+                  Prefs.sftpPassword.value = '';
+                  Prefs.sftpPort.value = '';
                   widget.recheckCurrentStep();
                 },
             ),

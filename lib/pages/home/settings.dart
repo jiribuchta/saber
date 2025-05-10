@@ -191,7 +191,7 @@ class _SettingsPageState extends State<SettingsPage> {
               sliver: SliverList.list(
             children: [
               const NextcloudProfile(),
-              const SFTPProfile(),
+              const SftpProfile(),
               const Padding(
                 padding: EdgeInsets.all(8),
                 child: AppInfo(),

@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:encrypt/encrypt.dart';
+import 'package:nextcloud/provisioning_api.dart';
 import 'package:nextcloud/webdav.dart';
 import 'package:saber/data/file_manager/file_manager.dart';
 import 'package:saber/data/nextcloud/errors.dart';
@@ -111,7 +112,6 @@ class SFTPClient {
     String json = jsonEncode(config);
     Uint8List file = Uint8List.fromList(json.codeUnits);
 
-    print(configFileUri.toString());
     final sftp = await _client.sftp();
     await sftp.mkdir(appRootDirectoryPrefix.toString());
     final configRemote = await sftp.open(configFileUri.toString(), mode: SftpFileOpenMode.create | SftpFileOpenMode.truncate | SftpFileOpenMode.write);
@@ -168,5 +168,20 @@ class SFTPClient {
     final List<int> hashedPasswordBytes = sha256.convert(encodedPassword).bytes;
     final Key passwordKey = Key(hashedPasswordBytes as Uint8List);
     return Encrypter(AES(passwordKey));
+  }
+
+  Future<Quota> getStorageQuota() async {
+    final sftp = await _client.sftp();
+    final statvfs = await sftp.statvfs('/root');
+    final total = statvfs.blockSize * statvfs.totalBlocks;
+    final free  = statvfs.blockSize * statvfs.freeBlocks;
+    final json = {
+      'free': free,
+      'relative': ((total - free) / total * 100).round(),
+      'total': total,
+      'used': total - free,
+    };
+    return UserDetailsQuota.fromJson(json);
+
   }
 }

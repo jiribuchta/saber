@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:saber/components/misc/faq.dart';
-import 'package:saber/data/extensions/string_extensions.dart';
 import 'package:saber/data/nextcloud/nextcloud_client_extension.dart';
 import 'package:saber/data/nextcloud/readable_bytes.dart';
 import 'package:saber/data/prefs.dart';
@@ -23,13 +22,12 @@ class _DoneLoginStepState extends State<DoneLoginStep> {
   static const width = 400.0;
 
   void _logout() {
-    Prefs.url.value = '';
-    Prefs.username.value = '';
-    Prefs.ncPassword.value = '';
-    Prefs.ncPasswordIsAnAppPassword.value = false;
+    Prefs.sftpUrl.value = '';
+    Prefs.sftpUsername.value = '';
+    Prefs.sftpPassword.value = '';
     Prefs.encPassword.value = '';
     Prefs.pfp.value = null;
-    Prefs.lastStorageQuota.value = null;
+    Prefs.sftpLastStorageQuota.value = null;
     Prefs.key.value = '';
     Prefs.iv.value = '';
     widget.recheckCurrentStep();
@@ -39,9 +37,8 @@ class _DoneLoginStepState extends State<DoneLoginStep> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final screenWidth = MediaQuery.sizeOf(context).width;
-    final quota = Prefs.lastStorageQuota.value;
-    final server =
-        Prefs.url.value.ifNotEmpty ?? t.login.ncLoginStep.saberNcServer;
+    final quota = Prefs.sftpLastStorageQuota.value;
+    final server = Prefs.sftpUrl.value;
     return ListView(
       padding: EdgeInsets.symmetric(
         horizontal: screenWidth > width ? (screenWidth - width) / 2 : 16,
@@ -59,7 +56,7 @@ class _DoneLoginStepState extends State<DoneLoginStep> {
         Row(
           children: [
             if (Prefs.pfp.value == null)
-              if (Prefs.url.value.isEmpty)
+              if (Prefs.sftpUrl.value.isEmpty)
                 SvgPicture.asset('assets/icon/icon.svg', width: 32, height: 32)
               else
                 const Icon(Icons.account_circle, size: 32)
@@ -67,7 +64,7 @@ class _DoneLoginStepState extends State<DoneLoginStep> {
               Image.memory(Prefs.pfp.value!, width: 32, height: 32),
             const SizedBox(width: 16),
             Expanded(
-              child: Text(t.login.status.hi(u: Prefs.username.value),
+              child: Text(t.login.status.hi(u: Prefs.sftpUsername.value),
                   style: textTheme.headlineSmall),
             ),
           ],
