@@ -70,6 +70,12 @@ abstract class Prefs {
       ncPasswordIsAnAppPassword.loaded &&
       encPassword.value.isNotEmpty;
 
+  static bool get sftploggedIn =>
+      sftpUrl.loaded &&
+      sftpUsername.value.isNotEmpty &&
+      sftpPassword.value.isNotEmpty &&
+      encPassword.value.isNotEmpty;
+
   static late final EncPref<String> key;
   static late final EncPref<String> iv;
 

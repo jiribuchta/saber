@@ -1,22 +1,10 @@
 import 'dart:async';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:nextcloud/core.dart';
-import 'package:nextcloud/nextcloud.dart';
 import 'package:regexed_validator/regexed_validator.dart';
-import 'package:saber/components/settings/app_info.dart';
 import 'package:saber/data/nextcloud/login_flow.dart';
-import 'package:saber/data/nextcloud/nextcloud_client_extension.dart';
 import 'package:saber/data/prefs.dart';
 import 'package:saber/i18n/strings.g.dart';
-import 'package:saber/pages/user/login.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:dartssh2/dartssh2.dart';
 
 class SFTPLoginStep extends StatefulWidget {
   const SFTPLoginStep({super.key, required this.recheckCurrentStep});
@@ -31,11 +19,6 @@ class _SFTPLoginStepState extends State<SFTPLoginStep> {
   static const width = 400.0;
 
   /// Lighter than the actual Saber color for better contrast
-  static const saberColor = Color(0xFFffd642);
-  static const onSaberColor = Colors.black;
-  static const saberColorDarkened = Color(0xFFc29800);
-  static const ncColor = Color(0xFF0082c9);
-
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _serverPortController = TextEditingController();
@@ -51,33 +34,6 @@ class _SFTPLoginStepState extends State<SFTPLoginStep> {
         loginFlow: loginFlow!,
       ),
     );
-
-    loginFlow!.future.then((credentials) async {
-      final client = NextcloudClient(
-        Uri.parse(credentials.server),
-        loginName: credentials.loginName,
-        appPassword: credentials.appPassword,
-        httpClient: NextcloudClientExtension.newHttpClient(),
-      );
-      final username = await client.getUsername();
-
-      Prefs.url.value = credentials.server ==
-              NextcloudClientExtension.defaultNextcloudUri.toString()
-          ? ''
-          : credentials.server;
-      Prefs.username.value = username;
-      Prefs.ncPassword.value = credentials.appPassword;
-      Prefs.ncPasswordIsAnAppPassword.value = true;
-      Prefs.encPassword.value = '';
-
-      Prefs.pfp.value = null;
-      client.core.avatar
-          .getAvatar(userId: username, size: AvatarGetAvatarSize.$512)
-          .then((response) => response.body)
-          .then((pfp) => Prefs.pfp.value = pfp);
-
-      widget.recheckCurrentStep();
-    });
   }
 
   final _serverUrlValid = ValueNotifier(false);
@@ -96,7 +52,6 @@ class _SFTPLoginStepState extends State<SFTPLoginStep> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final screenWidth = MediaQuery.sizeOf(context).width;
     return ListView(
@@ -159,7 +114,6 @@ class _SFTPLoginStepState extends State<SFTPLoginStep> {
           ElevatedButton(
             onPressed: () {
               // Handle adding SFTP profile
-              // TODO remove this
               Prefs.sftpUrl.value = _serverUrlController.text;
               Prefs.sftpUsername.value = _usernameController.text;
               Prefs.sftpPassword.value = _passwordController.text;
@@ -171,36 +125,11 @@ class _SFTPLoginStepState extends State<SFTPLoginStep> {
               _passwordController.clear();
               _serverPortController.clear();
 
-              getSFTPconnection();
               widget.recheckCurrentStep();
             },
             child: Text('Add SFTP Profile'),
           ),
         ]
-    );
-  }
-
-  void getSFTPconnection() async {
-    print(Prefs.sftpUrl.value);
-    final socket = await SSHSocket.connect(Prefs.sftpUrl.value, int.parse(Prefs.sftpPort.value));
-    final client = SSHClient(
-    socket,
-    username: Prefs.sftpUsername.value,
-    onPasswordRequest: () => Prefs.sftpPassword.value,
-  );
-
-  final uptime = await client.run('uptime');
-  print(utf8.decode(uptime));
-  client.close();
-  await client.done;
-  }
-
-  static ButtonStyle buttonColorStyle(Color primary, [Color? onPrimary]) {
-    final colorScheme = ColorScheme.fromSeed(
-        seedColor: primary, primary: primary, onPrimary: onPrimary);
-    return ElevatedButton.styleFrom(
-      backgroundColor: colorScheme.primary,
-      foregroundColor: colorScheme.onPrimary,
     );
   }
 }

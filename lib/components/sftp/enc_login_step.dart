@@ -6,10 +6,10 @@ import 'package:logging/logging.dart';
 import 'package:saber/components/misc/faq.dart';
 import 'package:saber/components/theming/font_fallbacks.dart';
 import 'package:saber/data/nextcloud/errors.dart';
-import 'package:saber/data/nextcloud/nextcloud_client_extension.dart';
 import 'package:saber/data/prefs.dart';
+import 'package:saber/data/sftp/sftp_client_extension.dart';
 import 'package:saber/i18n/strings.g.dart';
-import 'package:yaru/yaru.dart';
+import 'package:yaru/yaru.dart'; 
 
 class EncLoginStep extends StatefulWidget {
   const EncLoginStep({super.key, required this.recheckCurrentStep});
@@ -132,18 +132,24 @@ class _EncLoginStepState extends State<EncLoginStep> {
     );
   }
 
-  void _checkEncPassword() async {
+  Future<void> _checkEncPassword() async {
     _errorMessage.value = '';
-
     final encPassword = _encPasswordController.text;
     if (encPassword.isEmpty) return;
 
     try {
       Prefs.encPassword.value = encPassword;
-      final client = NextcloudClientExtension.withSavedDetails()!;
       _isChecking.value = true;
-      await client.loadEncryptionKey();
+
+      final client = await SFTPClient.withSavedDetails();
+      if (client != null) {
+        await client.loadEncryptionKey();
+        widget.recheckCurrentStep();
+      } else {
+        _errorMessage.value = t.login.encLoginStep.connectionFailed;
+      }      
       widget.recheckCurrentStep();
+
     } on EncLoginFailure {
       Prefs.encPassword.value = '';
 

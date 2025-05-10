@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:dartssh2/dartssh2.dart';
-import 'package:saber/data/prefs.dart';
-import 'package:flutter/material.dart';
-import 'package:logging/logging.dart';
 import 'package:saber/components/sftp/done_login_step.dart';
 import 'package:saber/components/sftp/enc_login_step.dart';
 import 'package:saber/components/sftp/sftp_login_step.dart';
-import 'package:saber/i18n/strings.g.dart';
+import 'package:saber/data/prefs.dart';
 
 class SFTPLoginPage extends StatefulWidget {
   const SFTPLoginPage({
@@ -50,7 +43,6 @@ class SFTPLoginPage extends StatefulWidget {
 }
 
 class _SFTPLoginPageState extends State<SFTPLoginPage> {
-  static const width = 400.0;
 
   late LoginStep step = LoginStep.waitingForPrefs;
 
@@ -90,8 +82,6 @@ class _SFTPLoginPageState extends State<SFTPLoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final screenWidth = MediaQuery.sizeOf(context).width;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add SFTP Profile'),
@@ -117,7 +107,7 @@ enum LoginStep {
   /// We're waiting for the Prefs to be loaded
   waitingForPrefs(0),
 
-  /// The user needs to authenticate with the Nextcloud server
+  /// The user needs to authenticate with the sftp server
   sftp(0.2),
 
   /// The user needs to provide their encryption password
